@@ -3,7 +3,7 @@ PLUGIN_NAME ?= $(shell grep 'plugin\.name' plugin.json | grep -o ':.*' | grep -o
 
 GODOT ?= /usr/bin/godot
 OPENGAMEPAD_UI_REPO ?= https://github.com/ShadowBlip/OpenGamepadUI.git
-OPENGAMEPAD_UI_BASE ?= ../OpenGamepadUI
+OPENGAMEPAD_UI_BASE ?= $(shell readlink -e ../OpenGamepadUI)
 EXPORT_PRESETS ?= $(OPENGAMEPAD_UI_BASE)/export_presets.cfg
 PLUGINS_DIR := $(OPENGAMEPAD_UI_BASE)/plugins
 BUILD_DIR := $(OPENGAMEPAD_UI_BASE)/build
@@ -49,6 +49,10 @@ install: dist ## Installs the plugin
 	cp -r dist/* "$(INSTALL_DIR)"
 	rm -rf $(INSTALL_DIR)/$(PLUGIN_ID)
 	@echo "Installed plugin to $(INSTALL_DIR)"
+
+.PHONY: edit
+edit: $(PLUGINS_DIR)/$(PLUGIN_ID) ## Open the project in the Godot editor
+	cd $(OPENGAMEPAD_UI_BASE) && $(MAKE) edit
 
 $(OPENGAMEPAD_UI_BASE):
 	git clone $(OPENGAMEPAD_UI_REPO) $@
